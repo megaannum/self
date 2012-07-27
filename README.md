@@ -40,7 +40,7 @@ This required some sort of forms capability. Hence, I built {Forms}
 a Vim library, but, along the way, discovered some bugs in the self code.
 With this release, I hope they have all been fixed.
 
-# Instalation
+# Installation
 
 The Self 'self.vim' code file should be in the 'autoload' directory and the
 'self.txt' in the 'doc' directory.
@@ -58,9 +58,7 @@ A function is created that return a label prototype object.
       if !exists("g:forms#Label")
 	let g:forms#Label = self#LoadObjectPrototype().clone('forms#Label')
 	let g:forms#Label.__text = ''
-
         ....
-
       endif
       return g:forms#Label
     endfunction

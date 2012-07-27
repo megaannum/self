@@ -64,7 +64,7 @@ a Vim library, but, along the way, discovered some bugs in the self code.
 With this release, I hope they have all been fixed.
 
 ==============================================================================
-2. Instalation                                                 *self-install*
+2. Installation                                                *self-install*
 
 The {Self} 'self.vim' code file should be in the 'autoload' directory and the
 'self.txt' in the 'doc' directory.
