@@ -282,7 +282,7 @@ if ! exists("g:self#DICTIONARY_TYPE")
   lockvar g:self#DICTIONARY_TYPE
 endif
 if ! exists("g:self#FLOAT_TYPE")
-  let g:self#FLOAT_TYPE     = type(0)
+  let g:self#FLOAT_TYPE     = type(0.0)
   lockvar g:self#FLOAT_TYPE
 endif
 
