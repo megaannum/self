@@ -1,0 +1,11 @@
+{
+  "name" : "self",
+  "version" : "2.0",
+  "author" : "Richard Emberson <richard . emberson at gmail com>",
+  "maintainer" : "Richard Emberson <richard . emberson at gmail com>",
+  "repository" : {"type": "git", "url":
+"git://github.com/megaannum/self.git", "branch" : "master"},
+  "dependencies" : {
+  },
+  "description" : "Vim prototype object system"
+}

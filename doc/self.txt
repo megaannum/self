@@ -1,0 +1,283 @@
+self.txt           For Vim version 7.3           Last change: 2012 July 19
+
+Author:      Richard Emberson 
+Version:     2.0
+Title:       Self Library
+Homepage:    http://www.vim.org/scripts/script.php?script_id=3072
+
+For Vim instructions on installing this 'txt' file, enter:
+    :help add-local-help
+
+==============================================================================
+0. Contents                                            *self* *self-contents*
+
+  0. Content                                 |self-contents|
+  1. Introduction                            |self-intro|
+  2. Installation                            |self-install|
+  3. Options                                 |self-options|
+  4. Supported Platforms                     |self-platforms|
+  5. Usage                                   |self-usage|
+  6. Examples                                |self-examples|
+      6.1 Forms
+      6.2 ScalaCommenter
+  7. FAQ                                     |self-faq|
+  8. Release notes                           |self-release-notes|
+  9. Todo List                               |self-todo|
+
+==============================================================================
+1. Introduction                                                *self-intro*
+
+Vim Self Object Prototype System allows developer to create 
+object-base scripts (inspired after the David Ungar's Self language). 
+
+This code to be used by script developers, not for direct use by
+end users (by itself, it does nothing).
+
+When Vim version 7.0 with dictionary variables and function references
+came out, I created this object prototype support script. At that time 
+I was planning to write a text-base windowing system on top of Vim which
+would allow script to create such things as forms. During script
+installation having per-script driven forms allowing for the tailoring
+of the script environment might have been a good thing.
+
+Anyway, time pasted and I moved onto other projects without really
+finishing this script. Then I wanted to create a Scala language
+comment generation script much like the jcommenter.Vim script for
+Java. My first cut, version 1.0, was all imperative: enumerations for
+the different entity types (class, object, 
+method, etc.); with functions for different behaviors and 
+switch-case statements (i.e., if-elseif-endif) using the enumeration 
+to determine which block of Vim script to execute. This worked
+but each entity's behavior was scattered throughout the script file.
+
+I then thought to dust off my old object system and re-casting my
+Scala comment generator using it. While the code size is the same,
+now behavior is near the data (or in an object's prototype chain).
+
+So, here is the code. Along with this file there are some simple usage
+example files also in the download. None of the examples, though, are
+as complex as what is done in the scalacommenter.vim script.
+
+Later, I wanted to enhance Envim to allow one to enter refactoring options.
+This required some sort of forms capability. Hence, I built {Forms}
+a Vim library, but, along the way, discovered some bugs in the self code.
+With this release, I hope they have all been fixed.
+
+==============================================================================
+2. Instalation                                                 *self-install*
+
+The {Self} 'self.vim' code file should be in the 'autoload' directory and the
+'self.txt' in the 'doc' directory.
+
+==============================================================================
+3. Options                                                     *self-options*
+
+Development Mode~
+
+There is a Boolean option that sets whether or not the code should be run
+in development mode or not: >
+    if ! exists("g:self#IN_DEVELOPMENT_MODE")
+      let g:self#IN_DEVELOPMENT_MODE = g:self#IS_FALSE
+      endif
+<
+If the application is run in development mode, then using the 'reload()'
+method it can be reloaded. In additions, some logging statements might
+use the variable as a guard statement, for example: >
+    if g:self#IN_DEVELOPMENT_MODE
+      call self#log('ENTER function: '.funcname)
+    endif
+<
+In production, the development mode should be false, the default.
+
+Log File~
+
+The logging capabilities of the {Self} library is rather unsophisticated
+and should really only be enabled by developers. To enable logging
+requires both its enabling and one must uncomment and/or create new log
+statements (thats right, currently all log statements are commented out).
+
+To enable logging the following should be defined: >
+    let g:self_log_enabled = g:self#IS_TRUE
+and to disable logging: >
+    let g:self_log_enabled = g:self#IS_FALSE
+
+To set the log file name: >
+    let g:self_log_file = "some_file_name"
+
+The default value for the log file name is "SELF_LOG".
+
+==============================================================================
+4. Supported Platforms                                       *self-platforms*
+
+The {Self} library ought to run all all platforms.
+
+==============================================================================
+5. Usage                                                        *self-usage*
+
+Vim {Self} is a prototype base object system; there are no classes. New 
+objects are gotten by cloning an existing object and adding new methods 
+and attributes and altering existing methods.
+
+There are two types of objects in {Self}, those that define a new type of
+object, prototype objects, and thoses that are clones of a prototype object.
+Strictly speaking, most prototype object system does not have such a
+distinction, but {Self} does primarily to help cleaning up the objects of an
+application after its done running. The first type of objects generally are a
+part of a base library and define a set of capabilities. These should not be
+deleted after an application runs because that application or another
+application might need to start and run again and will require those base
+library objects. On the other hand, the objects that make up an application
+come and go, so deleting them is a good thing and frees up space.
+
+In {Self} the first type of objects, called prototype objects, are created
+when an existing prototype object is cloned and the clone method take a new
+type name parameter. The second type of object, simply an object, is created
+by clone a prototype object or another object when the clone method does not
+have name parameter.
+
+A prototype object has the type name which is the name that was passed into
+the clone method. A clone of a prototype object has the same type name as
+its prototype.
+
+Every object created has an id (self._id) attribute: prototype object have
+negative Number values for their id values while normal objects have
+positive Number values. This makes it easy to make sure that prototype
+objects are not being deleted during application cleanup.
+
+The following code shows how one might define a prototype object: >
+
+    if g:self#IN_DEVELOPMENT_MODE
+      if exists("g:myfilename#MyObj")
+	unlet g:myfilename#MyObj
+      endif
+    endif
+    function! myfilename#loadMyObjPrototype()
+      if !exists("g:myfilename#MyObj")
+	let g:myfilename#MyObj = self#LoadObjectPrototype().clone('myfilename#MyObj')
+	" example attributes
+	let g:myfilename#MyObj.__text = ''
+	" other attributes
+
+	function! g:myfilename#MyObj.init(attrs) dict
+	  call call(g:self_ObjectPrototype.init, [a:attrs], self)
+	  " Do some post attribute setting stuff (like type checks)
+
+	  " VERY important, return self
+	  return self
+	endfunction
+
+	function! g:myfilename#MyObj.reinit(attrs) dict
+	  " Do pre-init stuff
+	  call self.init(a:attrs)
+	  " Do post-init stuff
+	endfunction
+
+	function! g:myfilename#MyObj.delete(...) dict
+	  " Do some object local cleanup
+	
+	  " Call Self object prototype to delete object
+	  " or call prototype if it needs to do some cleanup
+	  call call(g:self_ObjectPrototype.delete, a:000, self)
+	endfunction
+
+	" other methods
+
+      endif
+      return g:myfilename#MyObj
+    endfunction
+<
+There are a couple of things to note about the above code. First, the use
+of the if-statement that unlets the object instance if it exists, when the
+the code is sourced or re-sourced. This only happens in development mode.
+Generally, when developing an application based upon a library with uses
+the {Self} library, it is an iterative process, and reloading the code
+happens a lot. One way is to exit Vim and then re-enter Vim; another way
+is to re-source the file or, it the functions are autoloaded, it is to
+delete the functions defined in the file (and autoload will automagically
+re-source the file). The leading if-statement makes sure the object 
+behind the 'myfilename#loadMyObjPrototype()' function is removed, thus,
+forcing it to be re-built.
+
+To re-source your library file when its in the 'autoload' directory one
+can create a function that deletes all functions with your library's
+name: >
+  function! myfilename#reload()
+    call sefl#reload('myfilename#')
+  endfunction
+<
+This will call the {Self} library function that finds all functions
+whose name starts with 'myfilename#' and deletes them. This then caused
+autoload to reload the file. A mapping might be defined to make this
+easier to invoke, for example: >
+    map <Leader>r :call myfilename#reload()
+<
+Now that an object prototype is defined, to create a clone of the
+prototype one can define a "constructor" function: >
+    function! myfilename#newMyObj(attrs)
+      return myfilename#loadMyObjPrototype().clone().init(a:attrs)
+    endfunction
+<
+This creates a clone (with no name parameter) and then initialized the clone.
+Here is an example usage: >
+    let attr = {'text': 'Some text'}
+    let myobj = myfilename#newMyObj(attr)
+<
+This object can also be cloned. It can also be initialized by calling the
+"init(attr)' or by simply directly setting the attribute as shown here: >
+    let myobj2 = myobj.clone()
+    let myobj2.__text = 'Some other text'
+<
+It is always the case that care must be taken in directly setting an object's
+attribute because there could be some underlying semantics associated with the
+value which are being by-passed by directly setting it. The prototype's
+'init(attr)' may check those semantics (or there might be a setter method).
+
+==============================================================================
+6. Examples                                                   *self-examples*
+    6.1 Forms
+    6.2 ScalaCommenter
+
+==============================================================================
+7. FAQ                                                             *self-faq*
+>
+    Q: Why are some objects created by the 'clone()' method with a type name
+       and others with no type name?
+<
+    A: To make a distinction between application objects which can and should
+       be deleted and library object that, generally, should not be deleted -
+       because they may be used again during the same Vim session.
+       {Self} does not have a reference count on objects, So, when an object
+       is deleted, it is gone (attributes are unlet). If an object has this
+       deleted object as an ancestor prototype, then things will break.
+>
+    Q: Why do some objects have negative ids while others have positive?
+<
+    A: Prototype objects which have negative id values, objects expected to 
+       live the life of a Vim session should not be deleted by an application. 
+       The 'delete()' method checks an object's id and if it is negative
+       (and the variable g:self_can_delete_prototypes == false) then
+       an exception is thrown. 
+       Deleting a prototype object can cause problems especially if objects
+       that have it as an ancestor prototype are not also deleted.
+
+==============================================================================
+8. Release notes                                        *self-release-notes*
+    2.0 Release Note: ~
+
+    Corrected bugs found while writing the {Forms} library.
+    Re-organized code so that it could be autoloaded.
+    Added folding.
+    Added Object and Prototype Managers.
+    Added the 'reload(prefix)' function.
+
+    1.0 Release Note: ~
+
+    This is the initial release of the {Self} library.
+
+==============================================================================
+9. Todo List                                                   *self-todo*
+    * Empty for now.
+
+==============================================================================
+
+vim:tw=78:ts=8:noet:ft=help:fo+=t:norl:noet:
