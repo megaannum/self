@@ -5,10 +5,13 @@
 " Summary:       Vim Self Object Prototype System
 " Author:        Richard Emberson <richard.n.embersonATgmailDOTcom>
 " Last Modified: 06/30/2012
-" Version:       2.0
+" Version:       2.1.1
 " Modifications:
-"  1.0 : initial public release.
-"  2.0 : corrections for the forms library
+"  2.1.1 : changed name of addon-info.json
+"  2.1   : fixed FLOAT_TYPE
+"  2.0   : support autoload
+"  1.0   : initial public release.
+"  2.0   : corrections for the forms library
 "
 " Tested on vim 7.3 on Linux
 "
