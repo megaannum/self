@@ -45,6 +45,42 @@ With this release, I hope they have all been fixed.
 The Self 'self.vim' code file should be in the 'autoload' directory and the
 'self.txt' in the 'doc' directory.
 
+## Intalling with vim-addon-manager (VAM)
+
+For more information about vim-addon-manager, see [vim-addon-manager](https://github.com/MarcWeber/vim-addon-manager) and [Vim-addon-manager getting started](https://github.com/MarcWeber/vim-addon-manager/blob/master/doc/vim-addon-manager-getting-started.txt)
+
+In your .vimrc, add self as shown below:
+
+    fun SetupVAM()
+
+      ...
+
+      let g:vim_addon_manager = {}
+      let g:vim_addon_manager.plugin_sources = {}
+
+      ....
+
+      let g:vim_addon_manager.plugin_sources['self'] = {'type': 'git', 'url': 'git://github.com/megaannum/self.git'}
+
+      let plugins = [
+        \ 'self'
+        \ ]
+
+      call vam#ActivateAddons(plugins,{'auto_install' : 0})
+
+      ...
+
+    endf
+    call SetupVAM()
+
+
+Now start Vim. You will be asked by vim-addon-manager 
+if you would like to download and install the self plugin (no dependencies).
+
+## Installing with pathogen
+
+I do not use pathogen. An example usage would be welcome.
+
 # Usage
 
 A function is created that return a label prototype object.
