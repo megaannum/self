@@ -359,73 +359,66 @@ if ! exists("g:self_can_delete_prototypes")
   let g:self_can_delete_prototypes = g:self#IS_FALSE
 endif
 
-" Clear all objects (application and prototype)
+" Prototype Manager: {{{1
+" Clear Prototype Manager
 if g:self#IN_DEVELOPMENT_MODE
-  if exists("g:self_PM")
-    unlet g:self_PM
-  endif
-  if exists("g:self_OM")
-    unlet g:self_OM
+  if exists("g:self_ProtoTypeManager")
+    unlet g:self_ProtoTypeManager
   endif
 endif
 
-" Prototype Manager: {{{1
-function! self#PrototypeManager()
-  if !exists("g:self_PM")
-    let g:self_PM = { '_id': 0, '_prototypeDB': {} }
+if !exists("g:self_ProtoTypeManager")
+  let g:self_ProtoTypeManager = { '_id': 0, '_prototypeDB': {} }
 
-    " All id's are negative
-    function g:self_PM.nextId() dict
-      let g:self_PM._id  = g:self_PM._id - 1
-      let l:id = g:self_PM._id
-      return l:id
-    endfunction
+  " All id's are negative
+  function g:self_ProtoTypeManager.nextId() dict
+    let g:self_ProtoTypeManager._id  = g:self_ProtoTypeManager._id - 1
+    let l:id = g:self_ProtoTypeManager._id
+    return l:id
+  endfunction
 
-    function g:self_PM.store(prototype) dict
-      let l:id = self.nextId()
-      let a:prototype._id = l:id
-      let self._prototypeDB[l:id] = a:prototype
-    endfunction
+  function g:self_ProtoTypeManager.store(prototype) dict
+    let l:id = self.nextId()
+    let a:prototype._id = l:id
+    let self._prototypeDB[l:id] = a:prototype
+  endfunction
 
-    function g:self_PM.hasId(id) dict
-      return has_key(self._prototypeDB, a:id)
-    endfunction
+  function g:self_ProtoTypeManager.hasId(id) dict
+    return has_key(self._prototypeDB, a:id)
+  endfunction
 
-    function g:self_PM.lookup(id) dict
-      if has_key(self._prototypeDB, a:id)
-        return self._prototypeDB[a:id]
-      else
-        throw "Prototype does not exist with id: " . a:id
-      endif
-    endfunction
+  function g:self_ProtoTypeManager.lookup(id) dict
+    if has_key(self._prototypeDB, a:id)
+      return self._prototypeDB[a:id]
+    else
+      throw "Prototype does not exist with id: " . a:id
+    endif
+  endfunction
 
-    function g:self_PM.remove(prototype) dict
-      if has_key(a:prototype, '_id')
-        call self.removeId(a:prototype._id)
-        unlet a:prototype._id
-      endif
-    endfunction
+  function g:self_ProtoTypeManager.remove(prototype) dict
+    if has_key(a:prototype, '_id')
+      call self.removeId(a:prototype._id)
+      unlet a:prototype._id
+    endif
+  endfunction
 
-    function g:self_PM.removeId(id) dict
-      if has_key(self._prototypeDB, a:id)
-        unlet self._prototypeDB[a:id]
-      endif
-    endfunction
+  function g:self_ProtoTypeManager.removeId(id) dict
+    if has_key(self._prototypeDB, a:id)
+      unlet self._prototypeDB[a:id]
+    endif
+  endfunction
 
-    function g:self_PM.removeAll() dict
-      for key in keys(self._prototypeDB)
-        call self.removeId(key)
-      endfor
-    endfunction
-
-  endif
-  return g:self_PM
-endfunction
+  function g:self_ProtoTypeManager.removeAll() dict
+    for key in keys(self._prototypeDB)
+      call self.removeId(key)
+    endfor
+  endfunction
+endif
 
 function! self#IsPrototype(obj)
   if type(a:obj) == g:self#DICTIONARY_TYPE
     if has_key(a:obj, '_id')
-      return self#PrototypeManager().hasId(a:obj._id)
+      return g:self_ProtoTypeManager.hasId(a:obj._id)
     else
       return 0
     endif
@@ -434,63 +427,66 @@ function! self#IsPrototype(obj)
   endif
 endfunction
 
-
 " Object Manager: {{{1
-function! self#ObjectManager()
-  if !exists("g:self_OM")
-    let g:self_OM = { '_id': 0, '_objectDB': {} }
-
-    " All id's are positive
-    function g:self_OM.nextId() dict
-      let g:self_OM._id  = g:self_OM._id + 1
-      let l:id = g:self_OM._id
-      return l:id
-    endfunction
-
-    function g:self_OM.store(prototype) dict
-      let a:prototype._id = self.nextId()
-      let self._objectDB[a:prototype._id] = a:prototype
-    endfunction
-
-    function g:self_OM.hasId(id) dict
-      return has_key(self._objectDB, a:id)
-    endfunction
-
-    function g:self_OM.lookup(id) dict
-      if has_key(self._objectDB, a:id)
-        return self._objectDB[a:id]
-      else
-        throw "Object does not exist with id: " . a:id
-      endif
-    endfunction
-
-    function g:self_OM.remove(prototype) dict
-      if has_key(a:prototype, '_id')
-        call self.removeId(a:prototype._id)
-        unlet a:prototype._id
-      endif
-    endfunction
-
-    function g:self_OM.removeId(id) dict
-      if has_key(self._objectDB, a:id)
-        unlet self._objectDB[a:id]
-      endif
-    endfunction
-
-    function g:self_OM.removeAll() dict
-      for key in keys(self._objectDB)
-        call self.removeId(key)
-      endfor
-    endfunction
-
+" Clear Object Manager
+if g:self#IN_DEVELOPMENT_MODE
+  if exists("g:self_ObjectManager")
+    unlet g:self_ObjectManager
   endif
-  return g:self_OM
-endfunction
+endif
+
+if !exists("g:self_ObjectManager")
+  let g:self_ObjectManager = { '_id': 0, '_objectDB': {} }
+
+  " All id's are positive
+  function g:self_ObjectManager.nextId() dict
+    let g:self_ObjectManager._id  = g:self_ObjectManager._id + 1
+    let l:id = g:self_ObjectManager._id
+    return l:id
+  endfunction
+
+  function g:self_ObjectManager.store(prototype) dict
+    let a:prototype._id = self.nextId()
+    let self._objectDB[a:prototype._id] = a:prototype
+  endfunction
+
+  function g:self_ObjectManager.hasId(id) dict
+    return has_key(self._objectDB, a:id)
+  endfunction
+
+  function g:self_ObjectManager.lookup(id) dict
+    if has_key(self._objectDB, a:id)
+      return self._objectDB[a:id]
+    else
+      throw "Object does not exist with id: " . a:id
+    endif
+  endfunction
+
+  function g:self_ObjectManager.remove(prototype) dict
+    if has_key(a:prototype, '_id')
+      call self.removeId(a:prototype._id)
+      unlet a:prototype._id
+    endif
+  endfunction
+
+  function g:self_ObjectManager.removeId(id) dict
+    if has_key(self._objectDB, a:id)
+      unlet self._objectDB[a:id]
+    endif
+  endfunction
+
+  function g:self_ObjectManager.removeAll() dict
+    for key in keys(self._objectDB)
+      call self.removeId(key)
+    endfor
+  endfunction
+
+endif
 
 function! self#IsObject(obj)
   if type(a:obj) == g:self#DICTIONARY_TYPE
     if has_key(a:obj, '_id')
-      return self#ObjectManager().hasId(a:obj._id)
+      return g:self_ObjectManager.hasId(a:obj._id)
     else
       return 0
     endif
@@ -581,18 +577,18 @@ endfunction
 " ++++++++++++++++++++++++++++++++++++++++++++
 " SELF.VIM self_ObjectPrototype
 " ++++++++++++++++++++++++++++++++++++++++++++
-function! self#LoadObjectPrototype()
-  if g:self#IN_DEVELOPMENT_MODE
-    if exists("g:self_ObjectPrototype")
-      unlet g:self_ObjectPrototype
-    endif
+if g:self#IN_DEVELOPMENT_MODE
+  if exists("g:self_ObjectPrototype")
+    unlet g:self_ObjectPrototype
   endif
+endif
+function! self#LoadObjectPrototype()
   if !exists("g:self_ObjectPrototype")
     "-----------------------------------------------
     " private variables
     "-----------------------------------------------
     let g:self_ObjectPrototype = { '_type': 'self_ObjectPrototype' , '_prototype': '' }
-    call self#PrototypeManager().store(g:self_ObjectPrototype)
+    call g:self_ProtoTypeManager.store(g:self_ObjectPrototype)
 
     "-----------------------------------------------
     " public methods
@@ -716,7 +712,7 @@ call self#log("delete TOP")
     function g:self_ObjectPrototype._cloneType(prototype, ...) dict
 call self#log("_cloneType TOP")
 call self#log("_cloneType prototype._id=" . a:prototype._id)
-call self#log("_cloneType self#PrototypeManager=" . self#PrototypeManager().hasId(a:prototype._id))
+call self#log("_cloneType g:self_ProtoTypeManager=" . g:self_ProtoTypeManager.hasId(a:prototype._id))
       if exists("a:1")
         let l:type = a:1
         let l:inchain = g:self#IS_TRUE
@@ -742,13 +738,13 @@ call self#log("_cloneType inchain=" . l:inchain)
         elseif key == "super"
           if l:inchain
             let l:fd =        "function! l:o.super() dict\n"
-            let l:fd = l:fd .   "return self#PrototypeManager().lookup(" . a:prototype._id . ")\n"
+            let l:fd = l:fd .   "return g:self_ProtoTypeManager.lookup(" . a:prototype._id . ")\n"
             let l:fd = l:fd . "endfunction"
             execute l:fd
           else
             let l:fd =        "function! l:o.super() dict\n"
-            let l:fd = l:fd .   "let l:p = self#PrototypeManager().lookup(" . a:prototype._id . ")\n"
-            let l:fd = l:fd .   "return self#PrototypeManager().lookup(l:p._prototype._id)\n"
+            let l:fd = l:fd .   "let l:p = g:self_ProtoTypeManager.lookup(" . a:prototype._id . ")\n"
+            let l:fd = l:fd .   "return g:self_ProtoTypeManager.lookup(l:p._prototype._id)\n"
             let l:fd = l:fd . "endfunction"
             execute l:fd
           endif
@@ -772,7 +768,7 @@ call self#log("_cloneType making delete")
             " Do NOT call this Object's direct Prototype, rather call its
             " Prototype's Prototype.
             let l:fd =        "function! l:o." . key . "(...) dict\n"
-            let l:fd = l:fd .   "let l:o = self#PrototypeManager().lookup(" . a:prototype._id . ")\n"
+            let l:fd = l:fd .   "let l:o = g:self_ProtoTypeManager.lookup(" . a:prototype._id . ")\n"
             let l:fd = l:fd .   "return call(l:o." . key . ", a:000, self)\n"
             let l:fd = l:fd . "endfunction"
             execute l:fd
@@ -790,9 +786,9 @@ call self#log("_cloneType making delete")
       endfor
 
       if l:inchain
-        call self#PrototypeManager().store(l:o)
+        call g:self_ProtoTypeManager.store(l:o)
       else
-        call self#ObjectManager().store(l:o)
+        call g:self_ObjectManager.store(l:o)
       endif
 
 " call self#log("_cloneType " . l:o._type . "  " . string(l:o))
@@ -811,7 +807,7 @@ call self#log("_cloneType BOTTOM super._id=" . l:o.super()._id)
     function g:self_ObjectPrototype._cloneObject(prototype) dict
 call self#log("_cloneObject TOP")
 call self#log("_cloneObject prototype._id=" . a:prototype._id)
-call self#log("_cloneObject ObjectManager=" . self#ObjectManager().hasId(a:prototype._id))
+call self#log("_cloneObject ObjectManager=" . g:self_ObjectManager.hasId(a:prototype._id))
 
       let l:useid = g:self#IS_FALSE
       let l:usetype = g:self#IS_TRUE
@@ -857,7 +853,7 @@ call self#log("_cloneObject key=".key)
         elseif key == "super"
           if l:useid
             let l:fd =        "function! l:o.super() dict\n"
-            let l:fd = l:fd .   "return self#ObjectManager().lookup(" . a:prototype._id . ")\n"
+            let l:fd = l:fd .   "return g:self_ObjectManager.lookup(" . a:prototype._id . ")\n"
             let l:fd = l:fd . "endfunction"
             execute l:fd
 
@@ -877,7 +873,7 @@ call self#log("_cloneObject key=".key)
         elseif key == "clone"
             let l:fd =        "function! l:o.clone(...) dict\n"
             let l:fd = l:fd .   "call self#log('clone calling clone(self)TOP')\n"
-            let l:fd = l:fd .   "let l:o = self#ObjectManager().lookup(" . a:prototype._id . ")\n"
+            let l:fd = l:fd .   "let l:o = g:self_ObjectManager.lookup(" . a:prototype._id . ")\n"
             let l:fd = l:fd .   "if exists('a:1')\n"
             let l:fd = l:fd .     "return l:o.clone(a:1)\n"
             let l:fd = l:fd .   "else\n"
@@ -896,7 +892,7 @@ call self#log("_cloneObject making delete")
           if type(a:prototype[key]) == g:self#FUNCREF_TYPE
             " Pass self to the prototype's method
             let l:fd =        "function! l:o." . key . "(...) dict\n"
-            let l:fd = l:fd .   "let l:o = self#ObjectManager().lookup(" . a:prototype._id . ")\n"
+            let l:fd = l:fd .   "let l:o = g:self_ObjectManager.lookup(" . a:prototype._id . ")\n"
             let l:fd = l:fd .   "return call(l:o." . key . ", a:000, self)\n"
             let l:fd = l:fd . "endfunction"
             execute l:fd
@@ -914,7 +910,7 @@ call self#log("_cloneObject value=".a:prototype[key])
         endif
       endfor
 
-      call self#ObjectManager().store(l:o)
+      call g:self_ObjectManager.store(l:o)
 
 " call self#log("_cloneObject " . l:o._type . "  " . string(l:o))
 call self#log("_cloneObject BOTTOM " . l:o._type)
@@ -935,7 +931,7 @@ call self#log("_cloneObject BOTTOM super._id=" . l:o.super()._id)
         throw "Should only be called to delete Prototypes, not: " . a:prototype.getType()
       endif
       if g:self_can_delete_prototypes
-        call self#PrototypeManager().remove(a:prototype)
+        call g:self_ProtoTypeManager.remove(a:prototype)
         for key in keys(a:prototype)
           unlet a:prototype[key]
         endfor
@@ -946,7 +942,7 @@ call self#log("_cloneObject BOTTOM super._id=" . l:o.super()._id)
 
     function g:self_ObjectPrototype._deleteObject(prototype) dict
 call self#log("_deleteObject TOP id=" . a:prototype._id)
-      call self#ObjectManager().remove(a:prototype)
+      call g:self_ObjectManager.remove(a:prototype)
       for key in keys(a:prototype)
         unlet a:prototype[key]
       endfor
