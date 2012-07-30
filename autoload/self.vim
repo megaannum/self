@@ -5,7 +5,7 @@
 " Summary:       Vim Self Object Prototype System
 " Author:        Richard Emberson <richard.n.embersonATgmailDOTcom>
 " Last Modified: 06/30/2012
-" Version:       2.1.1
+" Version:       2.2
 " Modifications:
 "  2.1.1 : changed name of addon-info.json
 "  2.1   : fixed FLOAT_TYPE
