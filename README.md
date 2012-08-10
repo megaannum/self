@@ -127,3 +127,7 @@ value which are being by-passed by directly setting it. The prototype's
 ## Vim
 
 [Vim location](http://www.vim.org/scripts/script.php?script_id=3072)
+
+## Acknowledgements and thanks
+
+- Andy Wokula: provided feedback on help file syntax.

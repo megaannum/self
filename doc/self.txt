@@ -1,4 +1,4 @@
-self.txt           For Vim version 7.3           Last change: 2012 July 19
+*self.txt*           For Vim version 7.3           Last change: 2012 July 19
 
 Author:      Richard Emberson 
 Version:     2.2
