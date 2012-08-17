@@ -303,9 +303,9 @@ positive numbers to Object when they are registered.
 In the following example, a rational number Object will be created
 along with a test function exercising the code.
 For the code, see 
-[Rationa1](https://github.com/megaannum/self/blob/master/autoload/self/rational1.vim)
+[Rational1](https://github.com/megaannum/self/blob/master/autoload/self/rational1.vim)
 and
-[Rationa2](https://github.com/megaannum/self/blob/master/autoload/self/rational2.vim)
+[Rational2](https://github.com/megaannum/self/blob/master/autoload/self/rational2.vim)
 
 There maybe many ways to structure code that defines a new Object Prototype
 kind. Here, two ways will be described.
