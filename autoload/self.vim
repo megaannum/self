@@ -667,7 +667,7 @@ if 0
     endfunction
 endif
 
-    function! SELF_ObjectPrototype_equals() dict
+    function! SELF_ObjectPrototype_equals(obj) dict
       if type(a:obj) == g:self#DICTIONARY_TYPE
         if has_key(a:obj, '_id') && has_key(self, '_id')
           return a:obj._id == self._id
@@ -777,7 +777,7 @@ call self#log("_cloneType making delete")
           if type(a:prototype[key]) == g:self#FUNCREF_TYPE
             " Do NOT call this Object's direct Prototype, rather call its
             " Prototype's Prototype.
-            let kname = substitute(a:prototype._kind, '#', "_", "")
+            let kname = substitute(a:prototype._kind, '#', "_", "g")
             let fname = "MT_". kname . "_" . key
 
 call self#log("_cloneType fname=".fname)
@@ -913,7 +913,7 @@ call self#log("_cloneObject making delete")
         else
           if type(a:prototype[key]) == g:self#FUNCREF_TYPE
             " Pass self to the prototype's method
-            let kname = substitute(a:prototype._kind, '#', "_", "")
+            let kname = substitute(a:prototype._kind, '#', "_", "g")
             let fname = "MO_". kname . "_" . key
 call self#log("_cloneObject fname=".fname)
             " let l:fd = ""
