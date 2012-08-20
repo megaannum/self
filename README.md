@@ -19,7 +19,7 @@ of the script environment might have been a good thing.
 
 Anyway, time pasted and I moved onto other projects without really
 finishing this script. Then I wanted to create a Scala language
-comment generation script much like the jcommenter.Vim script for
+comment generation script much like the jcommenter. Vim script for
 Java. My first cut, version 1.0, was all imperative: enumerations for
 the different entity types (class, object, 
 method, etc.); with functions for different behaviors and 
@@ -60,7 +60,7 @@ In your .vimrc, add self as shown below:
 
       ....
 
-      let g:vim_addon_manager.plugin_sources['self'] = {'kind': 'git', 'url': 'git://github.com/megaannum/self.git'}
+      let g:vim_addon_manager.plugin_sources['self'] = {'kind': 'git', 'url': 'git://github.com/megaannum/self'}
 
       let plugins = [
         \ 'self'
@@ -127,6 +127,15 @@ value which are being by-passed by directly setting it. The prototype's
 ## Vim
 
 [Vim location](http://www.vim.org/scripts/script.php?script_id=3072)
+
+## Tutorial
+
+There is a self tutorial which can be accessed at [Self tutorial](https://github.com/megaannum/self/blob/master/tutorial/self/Tutorial.md)
+and the two example Rational number implementations covered in 
+the tutorial are located at
+[Rational1](https://github.com/megaannum/self/blob/master/autoload/self/rational1.vim)
+and
+[Rational2](https://github.com/megaannum/self/blob/master/autoload/self/rational2.vim)
 
 ## Acknowledgements and thanks
 
