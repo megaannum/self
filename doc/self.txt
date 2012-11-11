@@ -1,7 +1,7 @@
 *self.txt*           For Vim version 7.3           Last change: 2012 July 19
 
 Author:      Richard Emberson 
-Version:     2.3
+Version:     2.4
 Title:       Self Library
 Homepage:    http://www.vim.org/scripts/script.php?script_id=3072
 
@@ -262,6 +262,9 @@ value which are being by-passed by directly setting it. The prototype's
 
 ==============================================================================
 8. Release notes                                        *self-release-notes*
+    2.3 Release Note: ~
+    Added version function
+
     2.3 Release Note: ~
     Changed '_type' attribute to '_kind' and getType() to getKind().
     ObjectPrototype methods are now named not numbered.

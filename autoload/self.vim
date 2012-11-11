@@ -5,7 +5,7 @@
 " Summary:       Vim Self Object Prototype System
 " Author:        Richard Emberson <richard.n.embersonATgmailDOTcom>
 " Last Modified: 08/15/2012
-" Version:       2.3
+" Version:       2.4
 "
 " Tested on vim 7.3 on Linux
 "
@@ -175,9 +175,13 @@ endif
 if &cp || ( exists("g:loaded_self") && ! g:self#IN_DEVELOPMENT_MODE )
   finish
 endif
-let g:loaded_self = 'v2.0'
+let g:loaded_self = 'v2.4'
 let s:keepcpo = &cpo
 set cpo&vim
+
+function! self#version()
+  return '2.4'
+endfunction
 
 " ++++++++++++++++++++++++++++++++++++++++++++
 " Reload : {{{1
