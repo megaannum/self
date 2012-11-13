@@ -7,7 +7,7 @@
 "  Cals self#reload to force reloading of rational code:
 "    call self#reload('self#rational2#')
 "  This function is only available in development mode, i.e.,
-"    g:self#IN_DEVELOPMENT_MODE == self#IS_TRUE
+"    g:self#IN_DEVELOPMENT_MODE == 1
 "  To make reloading of autoloaded forms functions simple, one might
 "    want to define a mapping:
 "      map <Leader>srr :call self#rational2#reload()

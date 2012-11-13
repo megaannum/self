@@ -4,8 +4,8 @@
 " File:          self.vim
 " Summary:       Vim Self Object Prototype System
 " Author:        Richard Emberson <richard.n.embersonATgmailDOTcom>
-" Last Modified: 08/15/2012
-" Version:       2.4
+" Last Modified: 2012
+" Version:       2.5
 "
 " Tested on vim 7.3 on Linux
 "
@@ -97,23 +97,10 @@
 "   your changes will be lost.
 " ============================================================================
 
-" Define these just to make the code a little more readable
-" One could simply use 0 and 1, but these, it think, are clear to 
-" see what is happening (but, maybe not).
-" Existance check is to allow reloading of file.
-if ! exists("g:self#IS_FALSE")
-  let g:self#IS_FALSE = 0
-  lockvar g:self#IS_FALSE
-endif
-if ! exists("g:self#IS_TRUE")
-  let g:self#IS_TRUE = 1
-  lockvar g:self#IS_TRUE
-endif
-
 " If set to true, then when re-sourcing this file during a vim session
 "   static/global objects may be initialized again before use.
 if ! exists("g:self#IN_DEVELOPMENT_MODE")
-  let g:self#IN_DEVELOPMENT_MODE = g:self#IS_TRUE
+  let g:self#IN_DEVELOPMENT_MODE = 1
 endif
 
 
@@ -175,12 +162,12 @@ endif
 if &cp || ( exists("g:loaded_self") && ! g:self#IN_DEVELOPMENT_MODE )
   finish
 endif
-let g:loaded_self = 'v2.4'
+let g:loaded_self = 'v2.5'
 let s:keepcpo = &cpo
 set cpo&vim
 
 function! self#version()
-  return '2.4'
+  return '2.5'
 endfunction
 
 " ++++++++++++++++++++++++++++++++++++++++++++
@@ -192,7 +179,7 @@ endfunction
 "  With Vim autoloading, this function can be used to force a 
 "    reloading of functions that were autoloaded.
 "  This function is only available in development mode, i.e.,
-"    g:self#IN_DEVELOPMENT_MODE == self#IS_TRUE
+"    g:self#IN_DEVELOPMENT_MODE == 1
 "  To make reloading of autoloaded functions simple, one might
 "    want to define a mapping. Lets say your prefix is 'joesvimcode#'.
 "    Then the mapping might be:
@@ -338,7 +325,7 @@ if ! exists("g:self_log_file")
   let g:self_log_file = "SELF_LOG"
 endif
 if ! exists("g:self_do_log")
-  let g:self_do_log = g:self#IS_FALSE
+  let g:self_do_log = 0
 endif
 
 function! self#log(msg) 
@@ -354,7 +341,7 @@ endfunction
 " Prototype and Object Managers: {{{1
 
 if ! exists("g:self_can_delete_prototypes")
-  let g:self_can_delete_prototypes = g:self#IS_FALSE
+  let g:self_can_delete_prototypes = 0
 endif
 
 " Prototype Manager: {{{1
@@ -630,12 +617,12 @@ function! self#LoadObjectPrototype()
 
     function! SELF_ObjectPrototype_isKindOf(kind) dict
       if self.getKind() == a:kind
-        return g:self#IS_TRUE
+        return 1
       else
         let parent = self._prototype
         while type(parent) == g:self#DICTIONARY_TYPE
           if parent.getKind() == a:kind
-            return g:self#IS_TRUE
+            return 1
           endif
           if type(parent._prototype) == g:self#DICTIONARY_TYPE
             let parent = parent._prototype
@@ -643,7 +630,7 @@ function! self#LoadObjectPrototype()
             break
           endif
         endwhile
-        return g:self#IS_FALSE
+        return 0
       endif
     endfunction
     let g:self_ObjectPrototype.isKindOf = function("SELF_ObjectPrototype_isKindOf")
@@ -676,10 +663,10 @@ endif
         if has_key(a:obj, '_id') && has_key(self, '_id')
           return a:obj._id == self._id
         else
-          return g:self#IS_FALSE
+          return 0
         endif
       else
-        return g:self#IS_FALSE
+        return 0
       endif
     endfunction
     let g:self_ObjectPrototype.equals = function("SELF_ObjectPrototype_equals")
@@ -729,10 +716,10 @@ call self#log("_cloneType prototype._id=" . a:prototype._id)
 call self#log("_cloneType g:self_ProtoTypeManager=" . g:self_ProtoTypeManager.hasId(a:prototype._id))
       if exists("a:1")
         let l:kind = a:1
-        let l:inchain = g:self#IS_TRUE
+        let l:inchain = 1
       else
         let l:kind = a:prototype._kind
-        let l:inchain = g:self#IS_FALSE
+        let l:inchain = 0
       endif
 call self#log("_cloneType l:kind=" . l:kind)
 call self#log("_cloneType inchain=" . l:inchain)
@@ -835,30 +822,30 @@ call self#log("_cloneObject TOP")
 call self#log("_cloneObject prototype._id=" . a:prototype._id)
 call self#log("_cloneObject ObjectManager=" . g:self_ObjectManager.hasId(a:prototype._id))
 
-      let l:useid = g:self#IS_FALSE
-      let l:usetype = g:self#IS_TRUE
+      let l:useid = 0
+      let l:usetype = 1
 
       let l:pt1 = a:prototype._kind
       if type(a:prototype._prototype) == g:self#DICTIONARY_TYPE
         let l:pt2 = a:prototype._prototype._kind
         if l:pt1 != l:pt2
-          let l:usetype = g:self#IS_TRUE
+          let l:usetype = 1
         else
           if type(a:prototype._prototype._prototype) == g:self#DICTIONARY_TYPE
             let l:pt3 = a:prototype._prototype._prototype._kind
             if l:pt2 != l:pt3
               " use self._prototype
-              let l:usetype = g:self#IS_FALSE
+              let l:usetype = 0
             else
-              let l:useid = g:self#IS_TRUE
+              let l:useid = 1
             endif
           else
             " use self._prototype
-            let l:usetype = g:self#IS_FALSE
+            let l:usetype = 0
           endif
         endif
       else
-        let l:usetype = g:self#IS_TRUE
+        let l:usetype = 1
       endif
 
       let l:o = {}

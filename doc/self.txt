@@ -1,7 +1,7 @@
 *self.txt*           For Vim version 7.3           Last change: 2012 July 19
 
 Author:      Richard Emberson 
-Version:     2.4
+Version:     2.5
 Title:       Self Library
 Homepage:    http://www.vim.org/scripts/script.php?script_id=3072
 
@@ -77,7 +77,7 @@ Development Mode~
 There is a Boolean option that sets whether or not the code should be run
 in development mode or not: >
     if ! exists("g:self#IN_DEVELOPMENT_MODE")
-      let g:self#IN_DEVELOPMENT_MODE = g:self#IS_FALSE
+      let g:self#IN_DEVELOPMENT_MODE = 0
       endif
 <
 If the application is run in development mode, then using the 'reload()'
@@ -97,9 +97,9 @@ requires both its enabling and one must uncomment and/or create new log
 statements (thats right, currently all log statements are commented out).
 
 To enable logging the following should be defined: >
-    let g:self_log_enabled = g:self#IS_TRUE
+    let g:self_log_enabled = 1
 and to disable logging: >
-    let g:self_log_enabled = g:self#IS_FALSE
+    let g:self_log_enabled = 0
 
 To set the log file name: >
     let g:self_log_file = "some_file_name"
@@ -262,7 +262,10 @@ value which are being by-passed by directly setting it. The prototype's
 
 ==============================================================================
 8. Release notes                                        *self-release-notes*
-    2.3 Release Note: ~
+    2.5 Release Note: ~
+    No longer use IS_TRUE/IS_FALSE (now, 1/0)
+
+    2.4 Release Note: ~
     Added version function
 
     2.3 Release Note: ~
