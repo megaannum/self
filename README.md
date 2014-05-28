@@ -87,13 +87,13 @@ A function is created that return a label prototype object.
 
     if g:self#IN_DEVELOPMENT_MODE
       if exists("g:forms#Label")
-	unlet g:forms#Label
+        unlet g:forms#Label
       endif
     endif
     function! forms#loadLabelPrototype()
       if !exists("g:forms#Label")
-	let g:forms#Label = self#LoadObjectPrototype().clone('forms#Label')
-	let g:forms#Label.__text = ''
+        let g:forms#Label = self#LoadObjectPrototype().clone('forms#Label')
+        let g:forms#Label.__text = ''
         ....
       endif
       return g:forms#Label
